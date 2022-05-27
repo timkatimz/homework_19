@@ -1,3 +1,4 @@
+from sqlalchemy.exc import NoResultFound
 from dao.model.genre import Genre
 
 
@@ -5,8 +6,12 @@ class GenreDAO:
     def __init__(self, session):
         self.session = session
 
-    def get_one(self, bid):
-        return self.session.query(Genre).get(bid)
+    def get_one(self, gid):
+        try:
+            genre = self.session.query(Genre).filter(Genre.id == gid).one()
+        except NoResultFound as e:
+            return f"{e}"
+        return genre
 
     def get_all(self):
         return self.session.query(Genre).all()
@@ -17,14 +22,12 @@ class GenreDAO:
         self.session.commit()
         return ent
 
-    def delete(self, rid):
-        genre = self.get_one(rid)
+    def delete(self, gid):
+        genre = self.get_one(gid)
+
         self.session.delete(genre)
         self.session.commit()
 
     def update(self, genre_d):
-        genre = self.get_one(genre_d.get("id"))
-        genre.name = genre_d.get("name")
-
-        self.session.add(genre)
+        self.session.add(genre_d)
         self.session.commit()

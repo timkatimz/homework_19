@@ -1,3 +1,5 @@
+from sqlalchemy.exc import NoResultFound
+
 from dao.model.movie import Movie
 
 
@@ -5,8 +7,12 @@ class MovieDAO:
     def __init__(self, session):
         self.session = session
 
-    def get_one(self, bid):
-        return self.session.query(Movie).get(bid)
+    def get_one(self, mid):
+        try:
+            movie = self.session.query(Movie).filter(Movie.id == mid).one()
+        except NoResultFound as e:
+            return f"{e}"
+        return movie
 
     def get_all(self):
         # А еще можно сделать так, вместо всех методов get_by_*
@@ -33,22 +39,12 @@ class MovieDAO:
         ent = Movie(**movie_d)
         self.session.add(ent)
         self.session.commit()
-        return ent
 
-    def delete(self, rid):
-        movie = self.get_one(rid)
+    def delete(self, mid):
+        movie = self.get_one(mid)
         self.session.delete(movie)
         self.session.commit()
 
     def update(self, movie_d):
-        movie = self.get_one(movie_d.get("id"))
-        movie.title = movie_d.get("title")
-        movie.description = movie_d.get("description")
-        movie.trailer = movie_d.get("trailer")
-        movie.year = movie_d.get("year")
-        movie.rating = movie_d.get("rating")
-        movie.genre_id = movie_d.get("genre_id")
-        movie.director_id = movie_d.get("director_id")
-
-        self.session.add(movie)
+        self.session.add(movie_d)
         self.session.commit()

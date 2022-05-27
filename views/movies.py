@@ -1,7 +1,7 @@
 from flask import request
 from flask_restx import Resource, Namespace
 
-from dao.model.movie import MovieSchema
+from dao.model.movie import movie_schema
 from implemented import movie_service
 
 movie_ns = Namespace('movies')
@@ -19,7 +19,7 @@ class MoviesView(Resource):
             "year": year,
         }
         all_movies = movie_service.get_all(filters)
-        res = MovieSchema(many=True).dump(all_movies)
+        res = movie_schema.dump(all_movies, many=True)
         return res, 200
 
     def post(self):
@@ -30,18 +30,15 @@ class MoviesView(Resource):
 
 @movie_ns.route('/<int:bid>')
 class MovieView(Resource):
-    def get(self, bid):
-        b = movie_service.get_one(bid)
-        sm_d = MovieSchema().dump(b)
-        return sm_d, 200
+    def get(self, mid):
+        movie = movie_service.get_one(mid)
+        return movie_schema.dump(movie), 200
 
-    def put(self, bid):
+    def put(self):
         req_json = request.json
-        if "id" not in req_json:
-            req_json["id"] = bid
         movie_service.update(req_json)
         return "", 204
 
-    def delete(self, bid):
-        movie_service.delete(bid)
+    def delete(self, mid):
+        movie_service.delete(mid)
         return "", 204

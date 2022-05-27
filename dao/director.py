@@ -1,12 +1,17 @@
 from dao.model.director import Director
+from sqlalchemy.exc import NoResultFound
 
 
 class DirectorDAO:
     def __init__(self, session):
         self.session = session
 
-    def get_one(self, bid):
-        return self.session.query(Director).get(bid)
+    def get_one(self, did):
+        try:
+            director = self.session.query(Director).filter(Director.id == did).one()
+        except NoResultFound as e:
+            return f"{e}"
+        return director
 
     def get_all(self):
         return self.session.query(Director).all()
@@ -17,14 +22,11 @@ class DirectorDAO:
         self.session.commit()
         return ent
 
-    def delete(self, rid):
-        director = self.get_one(rid)
+    def delete(self, did):
+        director = self.get_one(did)
         self.session.delete(director)
         self.session.commit()
 
     def update(self, director_d):
-        director = self.get_one(director_d.get("id"))
-        director.name = director_d.get("name")
-
-        self.session.add(director)
+        self.session.add(director_d)
         self.session.commit()
