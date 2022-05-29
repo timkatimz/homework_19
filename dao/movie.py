@@ -39,6 +39,7 @@ class MovieDAO:
         ent = Movie(**movie_d)
         self.session.add(ent)
         self.session.commit()
+        return ent
 
     def delete(self, mid):
         movie = self.get_one(mid)

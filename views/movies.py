@@ -28,10 +28,11 @@ class MoviesView(Resource):
     def post(self):
         req_json = request.json
         movie = movie_service.create(req_json)
+        print(movie)
         return "", 201, {"location": f"/movies/{movie.id}"}
 
 
-@movie_ns.route('/<int:bid>')
+@movie_ns.route('/<int:mid>')
 class MovieView(Resource):
     @auth_required
     def get(self, mid):
@@ -39,9 +40,10 @@ class MovieView(Resource):
         return movie_schema.dump(movie), 200
 
     @admin_required
-    def put(self):
-        req_json = request.json
-        movie_service.update(req_json)
+    def put(self, mid):
+        data = request.json
+        data["id"] = mid
+        movie_service.update(data)
         return "", 204
 
     @admin_required

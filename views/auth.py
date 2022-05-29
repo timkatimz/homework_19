@@ -5,6 +5,7 @@ from implemented import auth_service
 
 auth_ns = Namespace("auth")
 
+
 @auth_ns.route("/")
 class AuthView(Resource):
     def post(self):

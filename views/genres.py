@@ -30,8 +30,9 @@ class GenreView(Resource):
         return genre_schema.dump(genre), 200
 
     @admin_required
-    def put(self):
+    def put(self, gid):
         data = request.json
+        data["id"] = gid
         genre_service.update(data)
         return "Updated", 201
 

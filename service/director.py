@@ -26,8 +26,7 @@ class DirectorService:
             director_schema.load(director_d)
         except ValidationError as e:
             return f"{e}"
-        did = director_d.get("id")
-        director = self.get_one(did)
+        director = self.dao.get_one(director_d.get("id"))
         director.name = director_d.get("name")
         return self.dao.update(director)
 

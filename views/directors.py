@@ -1,6 +1,6 @@
 from flask import request
 from flask_restx import Resource, Namespace
-from decorators import auth_required, admin_required
+from views.decorators import auth_required, admin_required
 from dao.model.director import director_schema
 from implemented import director_service
 
@@ -30,8 +30,9 @@ class DirectorView(Resource):
         return director_schema.dump(director), 200
 
     @admin_required
-    def put(self):
+    def put(self, did):
         data = request.json
+        data["id"] = did
         director_service.update(data)
         return "Updated", 201
 

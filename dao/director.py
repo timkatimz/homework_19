@@ -17,10 +17,9 @@ class DirectorDAO:
         return self.session.query(Director).all()
 
     def create(self, director_d):
-        ent = Director(**director_d)
-        self.session.add(ent)
+        director = Director(**director_d)
+        self.session.add(director)
         self.session.commit()
-        return ent
 
     def delete(self, did):
         director = self.get_one(did)

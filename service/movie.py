@@ -25,7 +25,7 @@ class MovieService:
 
     def create(self, data):
         try:
-            user_schema.load(data)
+            movie_schema.load(data)
         except ValidationError as e:
             return f"{e}"
         return self.dao.create(data)
@@ -43,8 +43,8 @@ class MovieService:
         movie.rating = data.get("rating")
         movie.genre_id = data.get("genre_id")
         movie.director_id = data.get("director_id")
-        self.dao.update(movie)
-        return self.dao
+        return self.dao.update(movie)
+
 
     def delete(self, mid):
         self.dao.delete(mid)
